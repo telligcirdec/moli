@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+    <changeSet author="PuppetMaster" id="init_uuid_fonction_postgresql_database" dbms="postgresql">
+        <sqlFile encoding="utf8" endDelimiter=";" path="sql/moli_uuid_generator.sql" relativeToChangelogFile="true" splitStatements="true" stripComments="true" />
+    </changeSet>
+
+    <changeSet author="PuppetMaster" id="init_schema_database">
+        <createTable schemaName="moli" tableName="moli_entity">
+            <column name="uuid_moli_entity" type="uuid" 
+                    defaultValue="${uuid_generator}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code_moli_entity_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_moli_entity" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at_moli_entity" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_by_moli_entity" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_at_moli_entity" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_moli_entity" type="jsonb" />
+            <column name="version_moli_entity" type="int8" 
+                    defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enable_moli_entity" type="bool" 
+                    defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey schemaName="moli" tableName="moli_entity" 
+                columnNames="uuid_moli_entity"/>
+
+        <createTable schemaName="moli" tableName="moli_entity_link">
+            <column name="uuid_moli_link_a" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid_moli_link_b" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey schemaName="moli" tableName="moli_entity" 
+                columnNames="uuid_moli_link_a, uuid_moli_link_b"/>
+
+        <createTable schemaName="moli" tableName="moli_entity_link">
+            <column name="code_moli_entiy_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey schemaName="moli" 
+                tableName="moli_entity" 
+                columnNames="code_moli_entiy_type"/>
+
+        <addForeignKeyConstraint baseTableName="moli_entity_type" 
+                baseColumnNames="code_moli_entiy_type" 
+                constraintName="fk_moli_entity_type_moli_entity_1" 
+                referencedTableName="moli_entity" 
+                referencedColumnNames="code_moli_entity_type" />
+
+        <addForeignKeyConstraint baseTableName="moli_entity_link" 
+                baseColumnNames="uuid_moli_link_a" 
+                constraintName="fk_moli_entity_link_moli_entity_a" 
+                referencedTableName="moli_entity" 
+                referencedColumnNames="uuid_moli_entity" />
+
+        <addForeignKeyConstraint baseTableName="moli_entity_link" 
+                baseColumnNames="uuid_moli_link_b" 
+                constraintName="fk_moli_entity_link_moli_entityb2" 
+                referencedTableName="moli_entity" 
+                referencedColumnNames="uuid_moli_entity" />
+
+    </changeSet>
+
+</databaseChangeLog> 
